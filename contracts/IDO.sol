@@ -28,8 +28,7 @@ contract IDO {
         claimStart = saleEnd + 1 weeks;
     }
 
-    function invest() public payable {
-        require(!s_halted);
+    function invest() public payable notHalted {
         require(block.timestamp >= saleStart);
         require(block.timestamp <= saleEnd);
         require(s_raised < hardcap);
@@ -42,6 +41,18 @@ contract IDO {
 
         s_claims[msg.sender] += _claimAmount;
         s_deposit.transfer(msg.value);
+    }
+
+    function claim() external notHalted {
+        require(block.timestamp >= claimStart);
+
+        uint _claims = s_claims[msg.sender];
+
+        require(_claims > 0);
+
+        s_claims[msg.sender] = 0;
+
+        IERC20(idoToken).transfer(msg.sender, _claims);
     }
 
     receive() external payable {
@@ -58,6 +69,11 @@ contract IDO {
 
     function resume() external Owner {
         s_halted = false;
+    }
+
+    modifier notHalted() {
+        require(!s_halted);
+        _;
     }
 
     modifier Owner() {

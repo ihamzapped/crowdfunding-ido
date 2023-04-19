@@ -55,6 +55,16 @@ contract IDO {
         IERC20(idoToken).transfer(msg.sender, _claims);
     }
 
+    function burn() external {
+        require(block.timestamp >= saleEnd);
+
+        uint _toBurn = hardcap - s_raised;
+
+        require(_toBurn > 0);
+
+        IERC20(idoToken).transferFrom(owner, address(0), _toBurn);
+    }
+
     receive() external payable {
         invest();
     }

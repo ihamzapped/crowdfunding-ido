@@ -4,7 +4,8 @@ pragma solidity ^0.8.1;
 import {IERC20} from "../interfaces/IERC20.sol";
 
 contract IDO {
-    uint public constant price = 0.001 ether; // 1 erc20 = 0.001 eth
+    uint public constant reward = 100 wei; // 1 eth wei = 10 erc20 wei
+    // uint public constant price = 0.001 ether; // 1 erc20 = 0.001 eth
     uint public constant hardcap = 500 ether;
     uint public constant investMax = 5 ether;
     uint public constant investMin = 0.01 ether;
@@ -31,13 +32,13 @@ contract IDO {
     }
 
     function invest() public payable notHalted {
-        require(block.timestamp >= saleStart);
-        require(block.timestamp <= saleEnd);
-        require(s_raised < hardcap);
-        require(msg.value >= investMin);
-        require(msg.value <= investMax);
+        require(block.timestamp >= saleStart, "!started");
+        require(block.timestamp <= saleEnd, "ended");
+        require(s_raised < hardcap, "raised > hardcap");
+        require(msg.value >= investMin, "< min amount");
+        require(msg.value <= investMax, "> max amount");
 
-        uint _claimAmount = msg.value / price;
+        uint _claimAmount = msg.value * reward;
 
         IERC20(idoToken).transferFrom(owner, address(this), _claimAmount); // This contract assumes IDO contract and Erc20 contract have same owner
 

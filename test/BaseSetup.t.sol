@@ -21,11 +21,9 @@ contract BaseSetup is Test {
         owner = users[0];
         dev = users[1];
 
-        startHoax(owner);
+        vm.startPrank(owner);
         token = new ERC20();
         ido = new IDO(dev, address(token));
         vm.stopPrank();
     }
-
-    function test() public view {}
 }

@@ -60,8 +60,8 @@ contract ERC20 is IERC20 {
         address _spender,
         uint256 _value
     ) external returns (bool success) {
-        require(_value > 0);
-        require(balances[msg.sender] >= _value);
+        require(_value > 0, "!value");
+        require(balances[msg.sender] >= _value, "!balance");
 
         allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);

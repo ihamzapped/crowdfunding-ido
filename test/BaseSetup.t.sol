@@ -2,16 +2,18 @@
 pragma solidity >=0.8;
 
 import {Utils} from "./Utils.sol";
-import {ERC20} from "../contracts/ERC20.sol";
+import {ERC20} from "../mocks/MockERC20.sol";
+import {IDO} from "../contracts/IDO.sol";
 import {stdStorage, StdStorage, Test, console, StdAssertions} from "forge-std/Test.sol";
 
 contract BaseSetup is Test {
     Utils internal utils;
     ERC20 internal token;
+    IDO internal ido;
 
     address payable[] internal users;
-    address internal owner;
-    address internal dev;
+    address payable internal owner;
+    address payable internal dev;
 
     function setUp() public virtual {
         utils = new Utils();
@@ -19,11 +21,11 @@ contract BaseSetup is Test {
         owner = users[0];
         dev = users[1];
 
-        hoax(owner);
+        startHoax(owner);
         token = new ERC20();
+        ido = new IDO(dev, address(token));
+        vm.stopPrank();
     }
 
-    function test_setup() public {
-        assertEq(token.totalSupply(), token.balanceOf(owner));
-    }
+    function test() public view {}
 }

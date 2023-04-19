@@ -13,8 +13,8 @@ contract IDO {
     address public immutable idoToken;
 
     uint public immutable claimStart;
-    uint public immutable saleStart = block.timestamp + 1 hours;
-    uint public immutable saleEnd = block.timestamp + 1 weeks;
+    uint public immutable saleStart;
+    uint public immutable saleEnd;
 
     bool public s_halted;
     uint public s_raised;
@@ -25,6 +25,8 @@ contract IDO {
         owner = msg.sender;
         idoToken = _idoToken;
         s_deposit = _deposit;
+        saleStart = block.timestamp + 1 hours;
+        saleEnd = block.timestamp + 1 weeks;
         claimStart = saleEnd + 1 weeks;
     }
 
@@ -58,11 +60,16 @@ contract IDO {
     function burn() external {
         require(block.timestamp >= saleEnd);
 
-        uint _toBurn = hardcap - s_raised;
+        /* 
+            @notice there is a slight chance that raised amount exceeds hardcap by a 
+            maximum of investMax - investMin, so an implicit conversion to int is needed here
+         */
+
+        int _toBurn = int(hardcap - s_raised);
 
         require(_toBurn > 0);
 
-        IERC20(idoToken).transferFrom(owner, address(0), _toBurn);
+        IERC20(idoToken).transferFrom(owner, address(0), uint(_toBurn));
     }
 
     receive() external payable {

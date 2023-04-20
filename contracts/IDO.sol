@@ -3,32 +3,47 @@ pragma solidity ^0.8.1;
 
 import {IERC20} from "../interfaces/IERC20.sol";
 
+struct Token {
+    address addr;
+    uint decimals;
+}
+
 contract IDO {
-    uint public constant reward = 100 wei; // 1 eth wei = 10 erc20 wei
-    // uint public constant price = 0.001 ether; // 1 erc20 = 0.001 eth
-    uint public constant hardcap = 500 ether;
-    uint public constant investMax = 5 ether;
-    uint public constant investMin = 0.01 ether;
-
     address public immutable owner;
-    address public immutable idoToken;
 
+    uint public immutable price;
+    uint public immutable hardcap;
+    uint public immutable investMax;
+    uint public immutable investMin;
     uint public immutable claimStart;
     uint public immutable saleStart;
     uint public immutable saleEnd;
 
     bool public s_halted;
     uint public s_raised;
+    Token public s_idoToken;
     address payable public s_deposit;
     mapping(address => uint) public s_claims;
 
-    constructor(address payable _deposit, address _idoToken) {
+    constructor(
+        address payable _deposit,
+        Token memory _idoToken,
+        uint _price,
+        uint _hardcap,
+        uint _investMax,
+        uint _investMin
+    ) {
         owner = msg.sender;
-        idoToken = _idoToken;
+        s_idoToken = _idoToken;
         s_deposit = _deposit;
         saleStart = block.timestamp + 1 hours;
         saleEnd = block.timestamp + 1 weeks;
         claimStart = saleEnd + 1 weeks;
+
+        price = _price;
+        hardcap = _hardcap;
+        investMax = _investMax;
+        investMin = _investMin;
     }
 
     function invest() public payable notHalted {
@@ -38,9 +53,13 @@ contract IDO {
         require(msg.value >= investMin, "< min amount");
         require(msg.value <= investMax, "> max amount");
 
-        uint _claimAmount = msg.value * reward;
+        uint _claimAmount = (msg.value / price) * 10 ** s_idoToken.decimals;
 
-        IERC20(idoToken).transferFrom(owner, address(this), _claimAmount); // This contract assumes IDO contract and Erc20 contract have same owner
+        IERC20(s_idoToken.addr).transferFrom(
+            owner,
+            address(this),
+            _claimAmount
+        ); // This contract assumes IDO contract and Erc20 contract have same owner
 
         s_claims[msg.sender] += _claimAmount;
         s_deposit.transfer(msg.value);
@@ -55,7 +74,7 @@ contract IDO {
 
         s_claims[msg.sender] = 0;
 
-        IERC20(idoToken).transfer(msg.sender, _claims);
+        IERC20(s_idoToken.addr).transfer(msg.sender, _claims);
     }
 
     function burn() external {
@@ -70,7 +89,7 @@ contract IDO {
 
         require(_toBurn > 0);
 
-        IERC20(idoToken).transferFrom(owner, address(0), uint(_toBurn));
+        IERC20(s_idoToken.addr).transferFrom(owner, address(0), uint(_toBurn));
     }
 
     receive() external payable {

@@ -7,16 +7,18 @@ contract ERC20 is IERC20 {
     bytes10 public constant name = "Mock Token";
     bytes3 public constant symbol = "MTK";
 
-    uint public constant decimals = 18;
-    uint public constant totalSupply = 1_000_000 * (10 ** decimals);
+    uint public immutable decimals;
+    uint public immutable totalSupply;
 
     address public immutable owner;
 
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowances;
 
-    constructor() {
+    constructor(uint _decimals) {
         owner = msg.sender;
+        decimals = _decimals;
+        totalSupply = 1_000_000_000 * (10 ** decimals);
         balances[owner] = totalSupply;
     }
 

@@ -66,7 +66,7 @@ contract IDO {
     }
 
     function claim() external notHalted {
-        require(block.timestamp >= claimStart);
+        require(block.timestamp >= claimStart, "!time");
 
         uint _claims = s_claims[msg.sender];
 

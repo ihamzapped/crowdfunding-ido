@@ -33,7 +33,7 @@ contract CommonBase is Test {
         vm.stopPrank();
     }
 
-    function _claimAmount(uint _amount) internal {
+    function _investTest(uint _amount) internal {
         vm.assume(_amount <= ido.investMax() && _amount >= ido.investMin());
         approveIdo(token.decimals());
 
@@ -46,5 +46,32 @@ contract CommonBase is Test {
         uint _claims = ido.s_claims(dev);
 
         assertEq(_claims, ((_amount / price) * 10 ** token.decimals()) * 2);
+    }
+
+    function _claimsTest() internal {
+        approveIdo(token.decimals());
+
+        skip(ido.saleStart());
+
+        vm.startPrank(dev);
+        ido.invest{value: 1 ether}();
+
+        skip(ido.saleEnd());
+
+        vm.expectRevert();
+        ido.claim();
+
+        skip(ido.claimStart());
+
+        uint _preBal = token.balanceOf(dev);
+        uint _preClaims = ido.s_claims(dev);
+
+        ido.claim();
+
+        uint _postBal = token.balanceOf(dev);
+        uint _postClaims = ido.s_claims(dev);
+
+        assertEq(_postClaims, 0);
+        assertEq(_postBal, _preClaims + _preBal);
     }
 }

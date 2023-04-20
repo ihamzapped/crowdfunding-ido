@@ -22,7 +22,11 @@ contract Test_IDOusdt is CommonBase {
         vm.stopPrank();
     }
 
-    function test_claimAmount(uint _amount) public {
-        _claimAmount(_amount);
+    function test_invest(uint _amount) public {
+        _investTest(_amount);
+    }
+
+    function test_claim() public {
+        _claimsTest();
     }
 }

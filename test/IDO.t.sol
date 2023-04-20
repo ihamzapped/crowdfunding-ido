@@ -24,34 +24,28 @@ contract Test_IDO is CommonBase {
     }
 
     function test_claim() public {
+        _claimsTest();
+    }
+
+    function test_invest(uint _amount) public {
+        _investTest(_amount);
+    }
+
+    function test_burn() public {
         approveIdo(token.decimals());
 
-        skip(ido.saleStart());
+        uint _raised = 500 ether;
+        stdstore.target(address(ido)).sig("s_raised()").checked_write(_raised);
 
-        vm.startPrank(dev);
-        ido.invest{value: 1 ether}();
+        uint _preBal = token.balanceOf(owner);
 
         skip(ido.saleEnd());
 
-        vm.expectRevert();
-        ido.claim();
+        ido.burn();
 
-        skip(ido.claimStart());
+        uint _postBal = token.balanceOf(owner);
 
-        uint _preBal = token.balanceOf(dev);
-        uint _preClaims = ido.s_claims(dev);
-
-        ido.claim();
-
-        uint _postBal = token.balanceOf(dev);
-        uint _postClaims = ido.s_claims(dev);
-
-        assertEq(_postClaims, 0);
-        assertEq(_postBal, _preClaims + _preBal);
-    }
-
-    function test_claimAmount(uint _amount) public {
-        _claimAmount(_amount);
+        assertEq(_postBal, _preBal - (ido.hardcap() - _raised));
     }
 
     function test_goalReached() public {

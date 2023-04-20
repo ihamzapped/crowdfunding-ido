@@ -2,13 +2,9 @@
 pragma solidity ^0.8.1;
 
 import {IERC20} from "../interfaces/IERC20.sol";
+import {IIDO, Token} from "../interfaces/IIDO.sol";
 
-struct Token {
-    address addr;
-    uint decimals;
-}
-
-contract IDO {
+contract IDO is IIDO {
     address public immutable owner;
 
     uint public immutable price;
@@ -63,6 +59,8 @@ contract IDO {
 
         s_claims[msg.sender] += _claimAmount;
         s_deposit.transfer(msg.value);
+
+        emit Invested(msg.sender, msg.value, s_claims[msg.sender]);
     }
 
     function claim() external notHalted {
@@ -75,6 +73,8 @@ contract IDO {
         s_claims[msg.sender] = 0;
 
         IERC20(s_idoToken.addr).transfer(msg.sender, _claims);
+
+        emit Claimed(msg.sender, _claims);
     }
 
     function burn() external {

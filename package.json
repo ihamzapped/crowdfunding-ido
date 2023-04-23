@@ -7,8 +7,8 @@
     "deps": "pnpm install && forge install",
     "watch": "forge test -vv --watch",
     "test": "forge test -vv",
-    "deploy:fuji": "npx hardhat run --network fuji scripts/deploy.ts",
-    "deploy:mumbai": "npx hardhat run --network mumbai scripts/deploy.ts"
+    "deploy:fuji": "npx hardhat --network fuji deploy --v",
+    "deploy:mumbai": "npx hardhat --network mumbai deploy --v"
   },
   "keywords": [],
   "author": "",

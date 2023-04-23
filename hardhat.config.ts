@@ -1,12 +1,18 @@
-import env from "dotenv";
-import { HardhatUserConfig } from "hardhat/config";
+import "./tasks";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-foundry";
+
+import env from "dotenv";
+import { HardhatUserConfig } from "hardhat/config";
 
 env.config();
 
 const config: HardhatUserConfig = {
   solidity: "0.8.18",
+
+  paths: {
+    // sources: "./contracts ./mocks",
+  },
 
   networks: {
     fuji: {

@@ -2,7 +2,7 @@ pragma solidity >=0.8;
 
 import {IDO, Token} from "../contracts/IDO.sol";
 import {CommonBase} from "./CommonBase.t.sol";
-import {ERC20} from "../mocks/MockERC20.sol";
+import {ERC20} from "../contracts/mocks/MockERC20.sol";
 import {console, stdStorage, StdStorage} from "forge-std/Test.sol";
 
 contract Test_IDO is CommonBase {

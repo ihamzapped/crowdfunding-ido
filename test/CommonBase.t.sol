@@ -2,7 +2,7 @@
 pragma solidity >=0.8;
 
 import {Utils} from "./Utils.sol";
-import {ERC20} from "../mocks/MockERC20.sol";
+import {ERC20} from "../contracts/mocks/MockERC20.sol";
 import {IDO} from "../contracts/IDO.sol";
 import {stdStorage, StdStorage, Test, console, StdAssertions} from "forge-std/Test.sol";
 

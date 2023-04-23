@@ -1,5 +1,3 @@
-# WIP
-
 ## Crowd Funding IDO
 
 `// TBD Description`
@@ -22,6 +20,8 @@
 ```shell
  pnpm deploy:<mumbai | fuji>
 ```
+
+See `npx hardhat deploy --help` for more options
 
 ## Test Contract
 

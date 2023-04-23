@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
-import {IERC20} from "../interfaces/IERC20.sol";
+import {IERC20} from "../../interfaces/IERC20.sol";
 
 contract ERC20 is IERC20 {
     bytes10 public constant name = "Mock Token";

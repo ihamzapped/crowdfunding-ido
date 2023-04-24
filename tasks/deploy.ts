@@ -3,7 +3,7 @@ import { task } from "hardhat/config";
 import { saleArgs, decimals } from "../constants/CArgs";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-task("deploy", "Deploys Token, IDO or both and verify if requested")
+task("deploy", "Deploy Token, IDO or both and verify if requested")
   .addFlag("p", "Deploy Only IDO")
   .addFlag("t", "Deploy Only Token")
   .addFlag("v", "Verify deployments if not on localhost")

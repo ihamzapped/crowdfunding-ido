@@ -1,6 +1,12 @@
 ## Crowd Funding IDO
 
-`// TBD Description`
+## Traits
+
+- The contract assumes token and IDO contract owner are same
+- Token owner must approve at least the hardcap amount to Ido contract
+- The contract deducts and holds tokens from erc20 owner's account when the user invests in IDO
+- Funds are locked in contract until claim time
+- If hardcap is not met, excess tokens can be burned by any user after sale ends
 
 ## Setup
 
